@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 public class TWCharacterController : MonoBehaviour{
-	private GVariables					globalVariables;
+	private GVariables globalVariables;
 
 	private Vector3 playerRespawnPoint;
 	/// <summary>
@@ -63,8 +63,6 @@ public class TWCharacterController : MonoBehaviour{
 	/// death 'scream' only once
 	/// </summary>
 	private bool havePlayedDeathAudio = false;
-
-
     /// <summary>
     /// Watch that allows for respawn buffer time
     /// to occur w/o anything interfering 
@@ -100,32 +98,41 @@ public class TWCharacterController : MonoBehaviour{
 						qDown = false, eDown = false;
 	
 	public enum playerStates {isGrounded, falling, rising, isSliding};
-	public playerStates currentPlayerState{
+	public playerStates currentPlayerState
+    {
         get { return currentState; }
         set { currentState = value; }
     }
 	
 	public playerStates currentState = playerStates.falling;
-	public bool getGrounded(){
-		if(currentState == playerStates.isGrounded){
+	public bool getGrounded()
+    {
+		if (currentState == playerStates.isGrounded)
+        {
 			return true;
 		}
 		else return false;
 	}
-	public bool getRising(){
-		if(currentState == playerStates.rising){
+	public bool getRising()
+    {
+		if (currentState == playerStates.rising)
+        {
 			return true;
 		}
 		else return false;
 	}
-	public bool getFalling(){
-		if(currentState == playerStates.falling){
+	public bool getFalling()
+    {
+		if (currentState == playerStates.falling)
+        {
 			return true;
 		}
 		else return false;
 	}
-	public bool getSliding(){
-		if(currentState == playerStates.isSliding){
+	public bool getSliding()
+    {
+		if (currentState == playerStates.isSliding)
+        {
 			return true;
 		}
 		else return false;
@@ -171,8 +178,6 @@ public class TWCharacterController : MonoBehaviour{
 	// references to TearManager and Fold
 	TearManager tearManager;
 	Fold fold;
-
-
     /// <summary>
     /// AnimationManager reference
     /// </summary>
@@ -194,10 +199,12 @@ public class TWCharacterController : MonoBehaviour{
 		checkUp();
 		
 		//checks if rising is true, if it is adds to beenRising
-		if(getRising())
-			beenRising++;
-		//if beenrising is equal to 15 then it sets rising to false, and resets beenRising.
-		if(beenRising == 15)
+        if (getRising())
+        {
+            beenRising++;
+        }
+        //if beenrising is equal to 15 then it sets rising to false, and resets beenRising.
+		if (beenRising == 15)
 		{
 			currentState = playerStates.falling;
 			beenRising = 0;
@@ -208,59 +215,40 @@ public class TWCharacterController : MonoBehaviour{
 		xvel = this.rigidbody.velocity.x;
 				
 		float rotZ = Mathf.Abs(this.transform.rotation.z);
-		
-		if(!getGrounded()){
-			speed = baseSpeed * airControl;
-		}
-		else
-			speed = baseSpeed;
-		
+
+        if (!getGrounded())
+        {
+            speed = baseSpeed * airControl;
+        }
+        else
+        {
+            speed = baseSpeed;
+        }
         // if the platform we are on is not too steep
 		// check for horizontal movement.
-		if(playerhitleft.getHitting() && playerhitright.getHitting() 
-			&& Mathf.Abs(this.rigidbody.velocity.x) < .4f && Mathf.Abs(this.rigidbody.velocity.y) < .4f && getSliding()){
-			//UnityEngine.Debug.Log("this is happening!");
-			// then we know we have gotten stuck and now we need to enable jump and left right movement
+		if (playerhitleft.getHitting() && playerhitright.getHitting() 
+			&& Mathf.Abs(this.rigidbody.velocity.x) < .4f && Mathf.Abs(this.rigidbody.velocity.y) < .4f && getSliding())
+        {
 			currentState = playerStates.isGrounded;
-
-            //if (!inputManagerRef.PlayerJumping())
-            //{
-            //    inputManagerRef.fingerSwipeAngle = 0;
-            //}
 		}
-	//	if(!fold.currentlyFolding && !tearManager.PlayerMovingPlatformState)
-	//			playerMovements();
-		//added by douglas to check if the level has a fold or tearmanager to do checks
-//		if(foldLevel && tearLevel)
-//		{
-			if(!fold.currentlyFolding && !tearManager.PlayerMovingPlatformState)
-				playerMovements();
-//		}
-//		else if(foldLevel)
-//		{
-//			if(!fold.currentlyFolding)
-//				playerMovements();
-//		}
-//		else if(tearLevel)
-//		{
-//			if(!tearManager.PlayerMovingPlatformState)
-//				playerMovements();
-//		}
-//		else
-//			playerMovements();
+        
+        if (!fold.currentlyFolding && !tearManager.PlayerMovingPlatformState)
+        {
+            playerMovements();
+        }
+        
+        if (!getGrounded())
+        {
+            applyGravity();
+        }
+	    
+        recordUp();
 		
-        // apply gravity
-		if(!getGrounded())applyGravity();
-		
-		// Record "up" direction velocity
-		recordUp();
-		
-		// this is determining if we are falling
-		if(((rotZ == z0Angle.z)&&(this.rigidbody.velocity.y <= 0 && !collidingOnBottom && !bottomHitting))
+		if (((rotZ == z0Angle.z)&&(this.rigidbody.velocity.y <= 0 && !collidingOnBottom && !bottomHitting))
 			|| ((rotZ == z90Angle.z) && (this.rigidbody.velocity.y >= 0 && !collidingOnBottom && !bottomHitting))
 			|| ((rotZ == z180Angle.z)&&(this.rigidbody.velocity.x >= 0 && !collidingOnBottom&& !bottomHitting))
 			|| ((rotZ == z270Angle.z && !collidingOnBottom && !bottomHitting) && (this.rigidbody.velocity.x <= 0)))
-			{
+        {
 				//Debug.Log("from max height check");
 				currentState = playerStates.falling;
 				//jumpReset = true;
@@ -278,32 +266,59 @@ public class TWCharacterController : MonoBehaviour{
 	public bool MovingRight()
 	{
 		//this checks moving in a positive x with the basic orientation
-		if(desiredAngle == 0f || desiredAngle == 360f)
+		if (desiredAngle == 0f || desiredAngle == 360f)
 		{
-			if(rigidbody.velocity.x >= 0) return true;
-			else return false;
+            if (rigidbody.velocity.x >= 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
 		}//checks if moving up y, for the sideways orientation
-		else if(desiredAngle == 90f)
+		else if (desiredAngle == 90f)
 		{
-			if(rigidbody.velocity.y >= 0) return true;
-			else return false;
+            if (rigidbody.velocity.y >= 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
 		}//checks if moving down x in the flipped orientation
-		else if(desiredAngle == 180f)
+		else if (desiredAngle == 180f)
 		{
-			if(rigidbody.velocity.x <= 0) return true;
-			else return false;
+            if (rigidbody.velocity.x <= 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
 		}//checks if moving down y in the other sideways orientation
-		else if(desiredAngle == 270f)
+		else if (desiredAngle == 270f)
 		{
-			if(rigidbody.velocity.y <= 0) return true;
-			else return false;
+            if (rigidbody.velocity.y <= 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
 		}
 		return true;
 	}
 	
-	void playerMovements(){
-		if(!getSliding())horizontalMoveKeyboard();
-
+	void playerMovements()
+    {
+        if (!getSliding())
+        {
+            horizontalMoveKeyboard();
+        }
         // check for jump
         verticalMove();
 	}
@@ -353,28 +368,27 @@ public class TWCharacterController : MonoBehaviour{
     void verticalMove()
     {
         //checks to see if the player pressed the jump button and the player is on a platform, ie touching the ground.
-        if ((Input.GetButton("Jump") || inputManagerRef.PlayerJumping()) && 
-            getGrounded())
+        if ((Input.GetButton("Jump") || inputManagerRef.PlayerJumping()) &&  getGrounded())
         {
-            
             Jump();
-            
         }
     }
 	
 	int count = 0;
     public void Jump()
     {
-		if(getGrounded() && jumpReset)
+		if (getGrounded() && jumpReset)
 		{
 			//Vector3 force = rigidbody.transform.up * jumpSpeed * this.transform.localScale.y;
 	        // add the jump force that propells the player upward. 
 	        //rigidbody.AddForce(force);
 			Vector3 upVector = rigidbody.transform.up * jumpSpeed;
-			if ((int)upVector.x != 0) {
+			if ((int)upVector.x != 0) 
+            {
 				this.rigidbody.velocity = new Vector3(upVector.x, this.rigidbody.velocity.y, 0);
 			}
-			else {
+			else 
+            {
 				this.rigidbody.velocity = new Vector3(this.rigidbody.velocity.x, upVector.y, 0);
 			}
 			currentState = playerStates.rising;
@@ -404,7 +418,6 @@ public class TWCharacterController : MonoBehaviour{
         if (gameStateManagerRef.OnMobileDevice())
         {
 			float fingSwipeAngle = inputManagerRef.fingerSwipeAngle;
-
 			if (!getGrounded() && !playerIsDead && spawnWatch.ElapsedMilliseconds > SPAWN_LIMIT)
             {
                 if (verticalSwipeDegreeAngle != 0)
@@ -445,13 +458,11 @@ public class TWCharacterController : MonoBehaviour{
                     }
                 }
             }
-
             else
             {
                 horizontal = inputManagerRef.GetHorizontalTouchMovement();  
             }
         }
-
         else
         {
             horizontal = Input.GetAxisRaw("Horizontal");
@@ -464,58 +475,73 @@ public class TWCharacterController : MonoBehaviour{
     // Moves the player horizontally
     public void horizontalMove(float horizontal)
     {
-		if((((playerhitright.getHitting() && horizontal == 1) || (playerhitleft.getHitting() && horizontal == -1)) &&(getRising() || getFalling()))){
+		if (((playerhitright.getHitting() && horizontal == 1) || (playerhitleft.getHitting() && horizontal == -1)) && (getRising() || getFalling()))
+        {
 			//UnityEngine.Debug.Log("Horizontal: " + horizontal + " not supposed to be moving: " + currentState);
 		}
-		else if(this.rigidbody.isKinematic == false){
+		else if (this.rigidbody.isKinematic == false)
+        {
 			//UnityEngine.Debug.Log("Horizontal: " + "moving in a direction: " + currentState);
 		    //Debug.Log(this.transform.rotation.z);
 			bool positive;
 			float rotZ = Mathf.Abs(this.transform.rotation.z);
 			// this is determining if we are pressing the horizontal in the opposite direction of what we are moving.
-			if(rotZ == z0Angle.z){
+			if(rotZ == z0Angle.z)
+            {
 				positive =  this.rigidbody.velocity.x*horizontal >= 0;
 			}
-			else if (rotZ == z180Angle.z){
+			else if (rotZ == z180Angle.z)
+            {
 				positive = this.rigidbody.velocity.x*horizontal*(-1) >= 0;
 			}
 			// this is determining if we are pressing the horizontal in the opposite direction of what we are moving.
-			else {
+			else 
+            {
 				//Debug.Log( transform.rotation.z + " i am on the right wall");
 				positive = this.rigidbody.velocity.y*horizontal*this.transform.right.y >=0;
-				
 			}
 			
 		    if (rotZ == z0Angle.z || rotZ == z180Angle.z)
 		    {
 				// if we are trying to go in the opposite direction that that which we are moving set the velocity to zero and start moving in the direction we want to go.
-				if(!positive){
+				if (!positive)
+                {
 					this.rigidbody.velocity = new Vector3(0, this.rigidbody.velocity.y, 0);
 				}
 				//Debug.Log("Horizontal: " + horizontal);
-		        if (horizontal == 0)
-		        {
-		            Vector3 newVec = new Vector3(rigidbody.velocity.x * slowDownRate * transform.localScale.x, rigidbody.velocity.y, 0);
-		            rigidbody.velocity = newVec;
-		        }
-		
-		        else
-		        {
-					// calculate direction of force based on the normal force of the platform you are currently standing on.
-					Vector3 force = new Vector3(this.transform.right.x * horizontal * speed * transform.localScale.x, 0, 0);
-					Vector3 degreeRotationNormal = z90Angle * groundNormal;
-					if(groundNormal != Vector3.zero && !getFalling() && !getRising())force = Vector3.Project(force, degreeRotationNormal);
-					//Debug.Log("Force: " + force);
-					// add that force to the rigidbody
-		            rigidbody.AddForce(force);
-					if(rigidbody.velocity.x > maxSpeed) rigidbody.velocity = new Vector3(maxSpeed, rigidbody.velocity.y, 0);
-					else if(rigidbody.velocity.x < -maxSpeed) rigidbody.velocity = new Vector3(-maxSpeed, rigidbody.velocity.y, 0);
-		        }
+                if (horizontal == 0)
+                {
+                    Vector3 newVec = new Vector3(rigidbody.velocity.x * slowDownRate * transform.localScale.x, rigidbody.velocity.y, 0);
+                    rigidbody.velocity = newVec;
+                }
+
+                else
+                {
+                    // calculate direction of force based on the normal force of the platform you are currently standing on.
+                    Vector3 force = new Vector3(this.transform.right.x * horizontal * speed * transform.localScale.x, 0, 0);
+                    Vector3 degreeRotationNormal = z90Angle * groundNormal;
+                    if (groundNormal != Vector3.zero && !getFalling() && !getRising())
+                    {
+                        force = Vector3.Project(force, degreeRotationNormal);
+                    }
+                    //Debug.Log("Force: " + force);
+                    // add that force to the rigidbody
+                    rigidbody.AddForce(force);
+                    if (rigidbody.velocity.x > maxSpeed)
+                    {
+                        rigidbody.velocity = new Vector3(maxSpeed, rigidbody.velocity.y, 0);
+                    }
+                    else if (rigidbody.velocity.x < -maxSpeed)
+                    {
+                        rigidbody.velocity = new Vector3(-maxSpeed, rigidbody.velocity.y, 0);
+                    }
+                }
 		    }
 		    else
 		    {	
 				// if we are trying to go in the opposite direction than that which we are moving set the velocity to zero and start moving in the direction we want to go.
-				if(!positive){
+				if (!positive)
+                {
 					this.rigidbody.velocity = new Vector3(this.rigidbody.velocity.x, 0, 0);
 				}
 				//Debug.Log("Horizontal: " + horizontal);
@@ -539,7 +565,6 @@ public class TWCharacterController : MonoBehaviour{
 		        }
 		    }
 		}
-
     }
 
     float slowDownRate = 0.0f;
@@ -547,7 +572,6 @@ public class TWCharacterController : MonoBehaviour{
     // Apply Gravity 
     void applyGravity()
     {
-		
         // Apply gravity in the down direction relative to the player.
         gravity = rigidbody.transform.up * forceOfGravity;
         // if we are jumping and begin falling change the force of gravity to be stronger so that we fall faster. 
@@ -564,8 +588,6 @@ public class TWCharacterController : MonoBehaviour{
 	float startingAngle;
 	DeviceOrientation currentDeviceOrientation;
 	
-	
-	
 	void checkOrientation()
 	{
 #if UNITY_IPHONE
@@ -576,28 +598,30 @@ public class TWCharacterController : MonoBehaviour{
 #endif
 		//UnityEngine.Debug.Log("eulerangle: "+this.rigidbody.rotation.eulerAngles.z);
 		//!important! this is making us rotate in smaller increments so that we don't get stuck in colliders(hopefully)
-		if(this.rigidbody.rotation.eulerAngles.z != desiredAngle){
+		if (this.rigidbody.rotation.eulerAngles.z != desiredAngle)
+        {
 			//UnityEngine.Debug.Log("Desired Angle in CheckOrientation(): " + desiredAngle);
 			// if our current rotation is less than the desiredAngle -1 then rotate in positive direction
 
-			if(this.rigidbody.rotation.eulerAngles.z < desiredAngle-1.0){
+			if (this.rigidbody.rotation.eulerAngles.z < desiredAngle-1.0) 
+            {
 				rigidbody.MoveRotation(Quaternion.Euler(0.0f, 0.0f, this.rigidbody.rotation.eulerAngles.z + 5.0f));
 #if UNITY_STANDALONE
 				myCamera.transform.rotation =Quaternion.Euler(0.0f, 0.0f, myCamera.transform.rotation.eulerAngles.z +5.0f);
 #endif
 			}
 			// if our current rotation is greater than the desiredAngle +1 then rotate in the negative direction
-			else if(this.rigidbody.rotation.eulerAngles.z > desiredAngle+1.0){
+			else if (this.rigidbody.rotation.eulerAngles.z > desiredAngle+1.0)
+            {
 				rigidbody.MoveRotation(Quaternion.Euler(0.0f, 0.0f, this.rigidbody.rotation.eulerAngles.z - 5.0f));
 #if UNITY_STANDALONE
-
 				myCamera.transform.rotation = Quaternion.Euler(0.0f, 0.0f, myCamera.transform.rotation.eulerAngles.z -5.0f);
 #endif
-
 			}
 			
 			// special case for rotating from 270 -> 360 because rotating to 360 puts the eulerangle equal to 0. 
-			if(this.rigidbody.rotation.eulerAngles.z < 1 && this.rigidbody.rotation.eulerAngles.z > -1 && desiredAngle == 360){
+			if (this.rigidbody.rotation.eulerAngles.z < 1 && this.rigidbody.rotation.eulerAngles.z > -1 && desiredAngle == 360)
+            {
 				rigidbody.MoveRotation(z0Angle);
 #if UNITY_STANDALONE
 				myCamera.transform.rotation = Quaternion.Euler(0.0f, 0.0f,0.0f);
@@ -605,18 +629,20 @@ public class TWCharacterController : MonoBehaviour{
 				desiredAngle = 0.0f;
 			}
 			// if our current rotation is with in desiredAngle +1/-1 then set it directly to the desired angle.
-			else if(this.rigidbody.rotation.eulerAngles.z < desiredAngle + 1.0 && this.rigidbody.rotation.eulerAngles.z > desiredAngle -1.0){
+			else if (this.rigidbody.rotation.eulerAngles.z < desiredAngle + 1.0 && this.rigidbody.rotation.eulerAngles.z > desiredAngle -1.0)
+            {
 				//UnityEngine.Debug.Log("I am calling this for desiredAngle: " + desiredAngle);
-				if(desiredAngle == 360.0){
+				if (desiredAngle == 360.0)
+                {
 					//UnityEngine.Debug.Log("calling inside here");
 					rigidbody.MoveRotation(z0Angle);
 #if UNITY_STANDALONE
-
 					myCamera.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 #endif
 					desiredAngle = 0.0f;
 				}
-				else{
+				else
+                {
 					//UnityEngine.Debug.Log("setting the rotation to desired angle: " + desiredAngle);
 					rigidbody.MoveRotation(Quaternion.Euler(0.0f, 0.0f, desiredAngle));
 #if UNITY_STANDALONE
@@ -625,209 +651,211 @@ public class TWCharacterController : MonoBehaviour{
 				}
 			}
 		}
-		if(!gameStateManagerRef.unityRemote)
+        if (!gameStateManagerRef.unityRemote)
+        {
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                qDown = true;
+            }
+            else if (Input.GetKeyDown(KeyCode.E))
+            {
+                eDown = true;
+            }
+        }		
+		if (getGrounded() && Mathf.Abs(this.rigidbody.rotation.eulerAngles.z - desiredAngle) < 0.2)
 		{
-			if(Input.GetKeyDown(KeyCode.Q))
+			//UnityEngine.Debug.Log("I am grounded and at the desiredAngle");
+			if (Input.GetKeyUp(KeyCode.E) && eDown)
 			{
-				qDown = true;
-			}
-			else if(Input.GetKeyDown(KeyCode.E))
-				eDown = true;
-		}			
-			if(getGrounded() && Mathf.Abs(this.rigidbody.rotation.eulerAngles.z - desiredAngle) < 0.2)
-			{
-				//UnityEngine.Debug.Log("I am grounded and at the desiredAngle");
-				if(Input.GetKeyUp(KeyCode.E) && eDown)
-				{
-					eDown = false;
-	
-					if(this.transform.rotation == z0Angle)
-	                {
-	#if UNITY_STANDALONE
-						myCamera.camera.orthographicSize = myCamera.camera.orthographicSize + 0.5f;
-	//					GameObject.FindGameObjectWithTag("MainCamera").transform.rotation = Quaternion.Euler(0f, 0f, 90f);
-	#endif
-						//desiredAngle = 90.0F;
-						currentDeviceOrientation = DeviceOrientation.Portrait;
-	                    inputManagerRef.initPlayerNonGroundedZRot = 90;
-	                    gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.Portrait);
-	                    verticalSwipeDegreeAngle = 180;
-					}
-	
-					else if(this.transform.rotation == z90Angle)
-	                {
-	#if UNITY_STANDALONE
-					myCamera.camera.orthographicSize =myCamera.camera.orthographicSize - 0.5f;
-	#endif
-						//GameObject.FindGameObjectWithTag("MainCamera").transform.rotation = Quaternion.Euler(0f, 0f, 180f);
-						//this.GetComponent<Camera>().transform.rotation = Quaternion.Euler(0f, 0f, 180f);
-						//desiredAngle = 180.0F;
-						currentDeviceOrientation = DeviceOrientation.LandscapeRight;
-	                    gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.LandscapeRight);
-	                    inputManagerRef.initPlayerNonGroundedZRot = 180;
-	                    verticalSwipeDegreeAngle = 270;
-					}
-	
-					else if(this.transform.rotation == z180Angle)
-	                {
-	#if UNITY_STANDALONE
+				eDown = false;
+				if (this.transform.rotation == z0Angle)
+	            {
+#if UNITY_STANDALONE
 					myCamera.camera.orthographicSize = myCamera.camera.orthographicSize + 0.5f;
-	////					GameObject.FindGameObjectWithTag("MainCamera").transform.rotation = Quaternion.Euler(0f, 0f, 270f);
-	#endif
-						//desiredAngle = 270.0F;
-						currentDeviceOrientation = DeviceOrientation.PortraitUpsideDown;
-	                    inputManagerRef.initPlayerNonGroundedZRot = 270;
-	                    gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.PortraitUpsideDown);
-	                    verticalSwipeDegreeAngle = 0;
-					}
-	
-					else 
-	                {
-	#if UNITY_STANDALONE
-					myCamera.camera.orthographicSize =myCamera.camera.orthographicSize - 0.5f;
-	#endif
-						//desiredAngle = 360.0F;
-						currentDeviceOrientation = DeviceOrientation.LandscapeLeft;
-	                    inputManagerRef.initPlayerNonGroundedZRot = 0;
-	                    gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.LandscapeLeft);
-	                    verticalSwipeDegreeAngle = 90;
-					}
-	
-	                inputManagerRef.initPlayerNonGroundedPos = gameObject.transform.position;
-	                inputManagerRef.hasHorizontalCollision = false;
-					//Debug.Log(this.transform.rotation.z);
-				}
-				else if(Input.GetKeyUp(KeyCode.Q) && qDown)
-				{
-					qDown = false;
-	
-					if(this.transform.rotation == z0Angle)
-	                {
-	#if UNITY_STANDALONE
-						myCamera.camera.orthographicSize = myCamera.camera.orthographicSize + 0.5f;
-	#endif
-						
-						//this.rigidbody.rotation = Quaternion.Euler(0f, 0f, 359.9f);
-						//desiredAngle = 270.0F;
-						currentDeviceOrientation = DeviceOrientation.PortraitUpsideDown;
-	                    inputManagerRef.initPlayerNonGroundedZRot = 270;
-	                    gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.PortraitUpsideDown);
-	                    verticalSwipeDegreeAngle = 0;
-					}
-	
-					else if(this.transform.rotation == z90Angle)
-	                {
-	#if UNITY_STANDALONE
-						myCamera.camera.orthographicSize = myCamera.camera.orthographicSize - 0.5f;
-	#endif
-						//desiredAngle = 0.0F;
-						currentDeviceOrientation = DeviceOrientation.LandscapeLeft;
-	                    inputManagerRef.initPlayerNonGroundedZRot = 0;
-	                    gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.LandscapeLeft);
-	                    verticalSwipeDegreeAngle = 90;
-					}
-	
-					else if(this.transform.rotation == z180Angle)
-	                {
-	#if UNITY_STANDALONE
-					myCamera.camera.orthographicSize =myCamera.camera.orthographicSize + 0.5f;
-	#endif
-						//desiredAngle = 90.0F;
-						currentDeviceOrientation = DeviceOrientation.Portrait;
-	                    inputManagerRef.initPlayerNonGroundedZRot = 90;
-	                    gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.Portrait);
-	                    verticalSwipeDegreeAngle = 180;
-					}
-	
-					else 
-	                {
-	#if UNITY_STANDALONE
-					myCamera.camera.orthographicSize =myCamera.camera.orthographicSize - 0.5f;
-	#endif
-						//desiredAngle = 180.0F;
-						//UnityEngine.Debug.Log("calling F when rot is equal to 270");
-						currentDeviceOrientation = DeviceOrientation.LandscapeRight;
-	                    inputManagerRef.initPlayerNonGroundedZRot = 180;
-	                    gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.LandscapeRight);
-	                    verticalSwipeDegreeAngle = 270;
-					}
-	
-	                inputManagerRef.initPlayerNonGroundedPos = gameObject.transform.position;
-	                inputManagerRef.hasHorizontalCollision = false;
-				}
-	//			UnityEngine.Debug.Log("this is my transform.z: " + this.transform.rotation.z);
-	//			UnityEngine.Debug.Log("this is 270.z: " + Quaternion.Euler(0f, 0f, 270.0f).z);
-	//			UnityEngine.Debug.Log("this is the check for landscapeRight: " + (Mathf.Abs(Mathf.Abs(Quaternion.Euler(0f, 0f, 270.0f).z) - Mathf.Abs(this.transform.rotation.z)) < 0.2f));
-				if ((Input.deviceOrientation == DeviceOrientation.Portrait || currentDeviceOrientation == DeviceOrientation.Portrait)
-					&& currentDeviceOrientation != oldOrient && ((Mathf.Abs(this.transform.rotation.z - z0Angle.z) < 0.2f) || 
-					(Mathf.Abs(this.transform.rotation.z - z180Angle.z) < 0.2f)))
-				{
-					oldOrient = Input.deviceOrientation;
+//					GameObject.FindGameObjectWithTag("MainCamera").transform.rotation = Quaternion.Euler(0f, 0f, 90f);
+#endif
+					//desiredAngle = 90.0F;
+					currentDeviceOrientation = DeviceOrientation.Portrait;
 	                inputManagerRef.initPlayerNonGroundedZRot = 90;
-	                inputManagerRef.initPlayerNonGroundedPos = gameObject.transform.position;
-	                inputManagerRef.hasHorizontalCollision = false;
 	                gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.Portrait);
 	                verticalSwipeDegreeAngle = 180;
-					desiredAngle = 90.0F;
 				}
 	
-				else if ((Input.deviceOrientation == DeviceOrientation.LandscapeRight || currentDeviceOrientation == DeviceOrientation.LandscapeRight)
-				&& currentDeviceOrientation != oldOrient	&& ((Mathf.Abs(this.transform.rotation.z - z90Angle.z) < 0.2f) || 
-					(Mathf.Abs(Mathf.Abs(this.transform.rotation.z) - Mathf.Abs(z270Angle.z)) < 0.2f)))
+				else if(this.transform.rotation == z90Angle)
 	            {
-					oldOrient = Input.deviceOrientation;
-					//UnityEngine.Debug.Log("this is getting called");
+#if UNITY_STANDALONE
+				    myCamera.camera.orthographicSize =myCamera.camera.orthographicSize - 0.5f;
+#endif
+					//GameObject.FindGameObjectWithTag("MainCamera").transform.rotation = Quaternion.Euler(0f, 0f, 180f);
+					//this.GetComponent<Camera>().transform.rotation = Quaternion.Euler(0f, 0f, 180f);
+					//desiredAngle = 180.0F;
+					currentDeviceOrientation = DeviceOrientation.LandscapeRight;
+	                gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.LandscapeRight);
 	                inputManagerRef.initPlayerNonGroundedZRot = 180;
-	                inputManagerRef.initPlayerNonGroundedPos = gameObject.transform.position;
-	                inputManagerRef.hasHorizontalCollision = false;
-					desiredAngle = 180.0F;
+	                verticalSwipeDegreeAngle = 270;
+				}
+	
+				else if(this.transform.rotation == z180Angle)
+	            {
+#if UNITY_STANDALONE
+				    myCamera.camera.orthographicSize = myCamera.camera.orthographicSize + 0.5f;
+////					GameObject.FindGameObjectWithTag("MainCamera").transform.rotation = Quaternion.Euler(0f, 0f, 270f);
+#endif
+					//desiredAngle = 270.0F;
+					currentDeviceOrientation = DeviceOrientation.PortraitUpsideDown;
+	                inputManagerRef.initPlayerNonGroundedZRot = 270;
+	                gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.PortraitUpsideDown);
+	                verticalSwipeDegreeAngle = 0;
+				}
+	
+				else 
+	            {
+#if UNITY_STANDALONE
+				    myCamera.camera.orthographicSize =myCamera.camera.orthographicSize - 0.5f;
+#endif
+					//desiredAngle = 360.0F;
+					currentDeviceOrientation = DeviceOrientation.LandscapeLeft;
+	                inputManagerRef.initPlayerNonGroundedZRot = 0;
+	                gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.LandscapeLeft);
+	                verticalSwipeDegreeAngle = 90;
+				}
+	
+	            inputManagerRef.initPlayerNonGroundedPos = gameObject.transform.position;
+	            inputManagerRef.hasHorizontalCollision = false;
+				//Debug.Log(this.transform.rotation.z);
+			}
+			else if(Input.GetKeyUp(KeyCode.Q) && qDown)
+			{
+				qDown = false;
+	
+				if(this.transform.rotation == z0Angle)
+	            {
+#if UNITY_STANDALONE
+					myCamera.camera.orthographicSize = myCamera.camera.orthographicSize + 0.5f;
+#endif
+					//this.rigidbody.rotation = Quaternion.Euler(0f, 0f, 359.9f);
+					//desiredAngle = 270.0F;
+					currentDeviceOrientation = DeviceOrientation.PortraitUpsideDown;
+	                inputManagerRef.initPlayerNonGroundedZRot = 270;
+	                gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.PortraitUpsideDown);
+	                verticalSwipeDegreeAngle = 0;
+				}
+	
+				else if(this.transform.rotation == z90Angle)
+	            {
+#if UNITY_STANDALONE
+					myCamera.camera.orthographicSize = myCamera.camera.orthographicSize - 0.5f;
+#endif
+					//desiredAngle = 0.0F;
+					currentDeviceOrientation = DeviceOrientation.LandscapeLeft;
+	                inputManagerRef.initPlayerNonGroundedZRot = 0;
+	                gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.LandscapeLeft);
+	                verticalSwipeDegreeAngle = 90;
+				}
+	
+				else if(this.transform.rotation == z180Angle)
+	            {
+#if UNITY_STANDALONE
+				    myCamera.camera.orthographicSize =myCamera.camera.orthographicSize + 0.5f;
+#endif
+					//desiredAngle = 90.0F;
+					currentDeviceOrientation = DeviceOrientation.Portrait;
+	                inputManagerRef.initPlayerNonGroundedZRot = 90;
+	                gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.Portrait);
+	                verticalSwipeDegreeAngle = 180;
+				}
+	
+				else 
+	            {
+#if UNITY_STANDALONE
+				    myCamera.camera.orthographicSize =myCamera.camera.orthographicSize - 0.5f;
+#endif
+					//desiredAngle = 180.0F;
+					//UnityEngine.Debug.Log("calling F when rot is equal to 270");
+					currentDeviceOrientation = DeviceOrientation.LandscapeRight;
+	                inputManagerRef.initPlayerNonGroundedZRot = 180;
 	                gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.LandscapeRight);
 	                verticalSwipeDegreeAngle = 270;
 				}
 	
-				else if ((Input.deviceOrientation == DeviceOrientation.PortraitUpsideDown || currentDeviceOrientation == DeviceOrientation.PortraitUpsideDown)
-					&&currentDeviceOrientation != oldOrient&& (desiredAngle == 180f || desiredAngle == 0.0f || desiredAngle == 360.0f))
-	//				&& ((Mathf.Abs(this.transform.rotation.z - Quaternion.Euler (0f, 0f, 180f).z) < 0.2f) || 
-	//				(Mathf.Abs(this.transform.rotation.z - Quaternion.Euler (0f, 0f, 0f).z) < 0.2f)))
-				{
-					oldOrient = Input.deviceOrientation;
-					inputManagerRef.initPlayerNonGroundedZRot = 270;
-	                inputManagerRef.initPlayerNonGroundedPos = gameObject.transform.position;
-	                gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.PortraitUpsideDown);
-	                verticalSwipeDegreeAngle = 0;
-	                inputManagerRef.hasHorizontalCollision = false;
+	            inputManagerRef.initPlayerNonGroundedPos = gameObject.transform.position;
+	            inputManagerRef.hasHorizontalCollision = false;
+			}
+//			UnityEngine.Debug.Log("this is my transform.z: " + this.transform.rotation.z);
+//			UnityEngine.Debug.Log("this is 270.z: " + Quaternion.Euler(0f, 0f, 270.0f).z);
+//			UnityEngine.Debug.Log("this is the check for landscapeRight: " + (Mathf.Abs(Mathf.Abs(Quaternion.Euler(0f, 0f, 270.0f).z) - Mathf.Abs(this.transform.rotation.z)) < 0.2f));
+			if ((Input.deviceOrientation == DeviceOrientation.Portrait || currentDeviceOrientation == DeviceOrientation.Portrait)
+				&& currentDeviceOrientation != oldOrient && ((Mathf.Abs(this.transform.rotation.z - z0Angle.z) < 0.2f) || 
+				(Mathf.Abs(this.transform.rotation.z - z180Angle.z) < 0.2f)))
+			{
+				oldOrient = Input.deviceOrientation;
+	            inputManagerRef.initPlayerNonGroundedZRot = 90;
+	            inputManagerRef.initPlayerNonGroundedPos = gameObject.transform.position;
+	            inputManagerRef.hasHorizontalCollision = false;
+	            gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.Portrait);
+	            verticalSwipeDegreeAngle = 180;
+				desiredAngle = 90.0F;
+			}
+	
+			else if ((Input.deviceOrientation == DeviceOrientation.LandscapeRight || currentDeviceOrientation == DeviceOrientation.LandscapeRight)
+			&& currentDeviceOrientation != oldOrient	&& ((Mathf.Abs(this.transform.rotation.z - z90Angle.z) < 0.2f) || 
+				(Mathf.Abs(Mathf.Abs(this.transform.rotation.z) - Mathf.Abs(z270Angle.z)) < 0.2f)))
+	        {
+				oldOrient = Input.deviceOrientation;
+				//UnityEngine.Debug.Log("this is getting called");
+	            inputManagerRef.initPlayerNonGroundedZRot = 180;
+	            inputManagerRef.initPlayerNonGroundedPos = gameObject.transform.position;
+	            inputManagerRef.hasHorizontalCollision = false;
+				desiredAngle = 180.0F;
+	            gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.LandscapeRight);
+	            verticalSwipeDegreeAngle = 270;
+			}
+	
+			else if ((Input.deviceOrientation == DeviceOrientation.PortraitUpsideDown || currentDeviceOrientation == DeviceOrientation.PortraitUpsideDown)
+				&&currentDeviceOrientation != oldOrient&& (desiredAngle == 180f || desiredAngle == 0.0f || desiredAngle == 360.0f))
+//				&& ((Mathf.Abs(this.transform.rotation.z - Quaternion.Euler (0f, 0f, 180f).z) < 0.2f) || 
+//				(Mathf.Abs(this.transform.rotation.z - Quaternion.Euler (0f, 0f, 0f).z) < 0.2f)))
+			{
+				oldOrient = Input.deviceOrientation;
+				inputManagerRef.initPlayerNonGroundedZRot = 270;
+	            inputManagerRef.initPlayerNonGroundedPos = gameObject.transform.position;
+	            gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.PortraitUpsideDown);
+	            verticalSwipeDegreeAngle = 0;
+	            inputManagerRef.hasHorizontalCollision = false;
+				desiredAngle = 270f;
+				//UnityEngine.Debug.Log("this is getting called");
+				/*if((Mathf.Abs(this.transform.rotation.z - z0Angle.z) < 0.2f)){
+					this.rigidbody.rotation = Quaternion.Euler(0f, 0f, 359.9f);
 					desiredAngle = 270f;
-					//UnityEngine.Debug.Log("this is getting called");
-					/*if((Mathf.Abs(this.transform.rotation.z - z0Angle.z) < 0.2f)){
-						this.rigidbody.rotation = Quaternion.Euler(0f, 0f, 359.9f);
-						desiredAngle = 270f;
-					}
-					else if((Mathf.Abs(this.transform.rotation.z - z180Angle.z) < 0.2f)){
-						desiredAngle = 270f;
-					}*/
-	
 				}
+				else if((Mathf.Abs(this.transform.rotation.z - z180Angle.z) < 0.2f)){
+					desiredAngle = 270f;
+				}*/
 	
-				else if((Input.deviceOrientation == DeviceOrientation.LandscapeLeft || currentDeviceOrientation == DeviceOrientation.LandscapeLeft)
-				&& currentDeviceOrientation != oldOrient	&& ((Mathf.Abs(this.transform.rotation.z - z90Angle.z) < 0.2f) || 
-					(Mathf.Abs(Mathf.Abs(this.transform.rotation.z) - Mathf.Abs(z270Angle.z)) < 0.2f)))
-				{
-					oldOrient = Input.deviceOrientation;
-	                inputManagerRef.initPlayerNonGroundedZRot = 0;
-	                inputManagerRef.initPlayerNonGroundedPos = gameObject.transform.position;
-	                inputManagerRef.hasHorizontalCollision = false;
-	                gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.LandscapeLeft);
-	                verticalSwipeDegreeAngle = 90;
-					//desiredAngle = 0.0f;
-					//commented out by Doug
-					if(this.transform.rotation == z90Angle){
-						desiredAngle = 0.0F;
-					}
-					else if(Mathf.Abs(Mathf.Abs(this.transform.rotation.z) - Mathf.Abs(z270Angle.z))< 0.2f){
-						desiredAngle = 360.0F;
-					}
+			}
+	
+			else if((Input.deviceOrientation == DeviceOrientation.LandscapeLeft || currentDeviceOrientation == DeviceOrientation.LandscapeLeft)
+			&& currentDeviceOrientation != oldOrient	&& ((Mathf.Abs(this.transform.rotation.z - z90Angle.z) < 0.2f) || 
+				(Mathf.Abs(Mathf.Abs(this.transform.rotation.z) - Mathf.Abs(z270Angle.z)) < 0.2f)))
+			{
+				oldOrient = Input.deviceOrientation;
+	            inputManagerRef.initPlayerNonGroundedZRot = 0;
+	            inputManagerRef.initPlayerNonGroundedPos = gameObject.transform.position;
+	            inputManagerRef.hasHorizontalCollision = false;
+	            gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.LandscapeLeft);
+	            verticalSwipeDegreeAngle = 90;
+				//desiredAngle = 0.0f;
+				//commented out by Doug
+				if (this.transform.rotation == z90Angle)
+                {
+					desiredAngle = 0.0F;
+				}
+				else if (Mathf.Abs(Mathf.Abs(this.transform.rotation.z) - Mathf.Abs(z270Angle.z))< 0.2f)
+                {
+					desiredAngle = 360.0F;
 				}
 			}
+		}
 	}
 	
     // gets the script attached to the bottom of the player. 
@@ -854,10 +882,17 @@ public class TWCharacterController : MonoBehaviour{
 		
 		// get a reference to the tear manager
 		tearManager = GameObject.FindGameObjectWithTag("TearManager").GetComponent<TearManager>();
-		if(tearManager) tearLevel = true;
-		// get a reference to fold
+        if (tearManager)
+        {
+            tearLevel = true;
+        }
+        // get a reference to fold
 		fold = GameObject.FindGameObjectWithTag("FoldObject").GetComponent<Fold>();
-		if(fold) foldLevel = true;
+        if (fold)
+        {
+            foldLevel = true;
+        }
+        
         if (GameObject.FindGameObjectsWithTag("MainObject").Length > 1)
         {
             GameObject[] mainObjectList = GameObject.FindGameObjectsWithTag("MainObject");
@@ -867,8 +902,10 @@ public class TWCharacterController : MonoBehaviour{
                     mainObject = mainObjectList[i];
             }
         }
-		if(foldLevel)
-			unfoldCollision = GameObject.Find("Graphics").GetComponent<UnfoldCollision>();
+        if (foldLevel)
+        {
+            unfoldCollision = GameObject.Find("Graphics").GetComponent<UnfoldCollision>();
+        }
         // Ensures all necessary scripts are added for the MainObject
         gameStateManagerRef = mainObject.GetComponent<GameStateManager>();
         gameStateManagerRef.EnsureCoreScriptsAdded();
@@ -880,16 +917,20 @@ public class TWCharacterController : MonoBehaviour{
 		// get all the collision triggers for checking directions. 
 		triggerHitting[] triggers = this.gameObject.GetComponentsInChildren<triggerHitting>();
 		//Debug.Log("trigger.length: " + triggers.Length);
-		foreach(triggerHitting trigger in triggers){
-			if(trigger.placementOf == "bottom"){
+		foreach (triggerHitting trigger in triggers)
+        {
+			if (trigger.placementOf == "bottom")
+            {
 				//Debug.Log("bottom");
 				playerhitbottom = trigger;
 			}
-			else if(trigger.placementOf == "left"){
+			else if (trigger.placementOf == "left")
+            {
 				//Debug.Log("left");
 				playerhitleft = trigger;
 			}
-			else if(trigger.placementOf == "right"){
+			else if (trigger.placementOf == "right")
+            {
 				//Debug.Log("right");
 				playerhitright = trigger;
 			}
@@ -911,17 +952,21 @@ public class TWCharacterController : MonoBehaviour{
 		myGoal = GameObject.FindGameObjectWithTag("EndGoal").GetComponent<LevelGoal>();
     }
 	
-	string printList(List<Collision> currList){
+	string printList(List<Collision> currList)
+    {
 		string output = "";
-		foreach (Collision current in currList){
+		foreach (Collision current in currList)
+        {
 			output += " " + current.gameObject.name + " ";
 		}
 		return output;
 	}
 	
-	string printListNormals(List<Collision> currList){
+	string printListNormals(List<Collision> currList)
+    {
 		string output = "";
-		foreach (Collision current in currList){
+		foreach (Collision current in currList)
+        {
 			output += " " + current.gameObject.name + ":" + current.contacts[0].normal.x + " ";
 		}
 		return output;
@@ -943,20 +988,24 @@ public class TWCharacterController : MonoBehaviour{
 		//HUGE ISSUES WITH RESTARTING GAME, NOTHING IS RESET IS WORKING CORRECTLY - J.C.
 		//Application.LoadLevel(Application.loadedLevel);
 		//return;
-		if(globalVariables.keys > 0){
+		if(globalVariables.keys > 0)
+        {
 			globalVariables.keys = 0;
 			
 			GameObject[] keysInLevel = GameObject.FindGameObjectsWithTag("Key");
-			for(int i = 0; i < keysInLevel.Length; ++i){
+			for(int i = 0; i < keysInLevel.Length; ++i)
+            {
 				keysInLevel[i].collider.enabled = true;
 				keysInLevel[i].renderer.enabled = true;
 			}
 		}
-		if(globalVariables.coins > 0){
+		if(globalVariables.coins > 0)
+        {
 			globalVariables.coins = 0;
 			
 			GameObject[] coinsInLevel = GameObject.FindGameObjectsWithTag("Coin");
-			for(int i = 0; i < coinsInLevel.Length; ++i){
+			for(int i = 0; i < coinsInLevel.Length; ++i)
+            {
 				coinsInLevel[i].collider.enabled = true;
 				coinsInLevel[i].renderer.enabled = true;
 			}
@@ -965,11 +1014,15 @@ public class TWCharacterController : MonoBehaviour{
 		playerhitbottom.Reset();
 		playerhitleft.Reset();
 		playerhitright.Reset();
-		if(foldLevel)
-			fold.ResetFold();
-		if(tearLevel)
-			tearManager.DeathReset();
-		// if(foldLevel)
+        if (foldLevel)
+        {
+            fold.ResetFold();
+        }
+        if (tearLevel)
+        {
+            tearManager.DeathReset();
+        }
+        // if(foldLevel)
 			// unfoldCollision.restart();
         this.transform.position = playerRespawnPoint;
         this.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
@@ -997,12 +1050,15 @@ public class TWCharacterController : MonoBehaviour{
 	/// <summary>
 	/// Update this instance.
 	/// </summary>
-    private void Update(){
+    private void Update()
+    {
 		/*Check if the player has gone off the paper, then determine if dead or not.*/
         //UnityEngine.Debug.Log("POS " + Camera.mainCamera.WorldToScreenPoint(gameObject.transform.position));
-		if (Input.GetKeyDown(KeyCode.P))
-			UnityEngine.Debug.Break();
-		Vector3 fwd = transform.TransformDirection(Vector3.forward * 3.0f);
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            UnityEngine.Debug.Break();
+        }
+        Vector3 fwd = transform.TransformDirection(Vector3.forward * 3.0f);
 		//Vector3 side = new Vector3(gameObject.collider.bounds.max.x, 0.0f, 0.0f);
 		
 		
@@ -1030,9 +1086,7 @@ public class TWCharacterController : MonoBehaviour{
             {
                 PlayerRespawn();
             }
-
             //UnityEngine.Debug.Log("DEAD");
-
             return;
         }
 
@@ -1058,7 +1112,8 @@ public class TWCharacterController : MonoBehaviour{
 			//UnityEngine.Debug.Log(printListNormals(currentCollisions));
 			Vector3 bestGroundNormal = Vector3.zero;
 			// loop through each element
-			foreach (Collision current in currentCollisions){
+			foreach (Collision current in currentCollisions)
+            {
 				//UnityEngine.Debug.Log(current.gameObject.name + " normal.x: " + current.contacts[0].normal.x + " rotation: " + this.rigidbody.rotation.eulerAngles.z);
 				// this is horrible i know XD : checks to see if colliding on bottom according to rotation
 				//UnityEngine.Debug.Log("Checking gameobject: " + current.gameObject.name);
@@ -1066,18 +1121,23 @@ public class TWCharacterController : MonoBehaviour{
 				if((current.contacts[0].normal.y > 0 && Mathf.Abs(this.rigidbody.rotation.eulerAngles.z) < 0.2) || 
 					(current.contacts[0].normal.y < 0 && Mathf.Abs(this.rigidbody.rotation.eulerAngles.z - 180f) < 0.2) ||
 					(current.contacts[0].normal.x < 0 && Mathf.Abs(this.rigidbody.rotation.eulerAngles.z - 90f) < 0.2)||
-					(current.contacts[0].normal.x > 0 && Mathf.Abs(this.rigidbody.rotation.eulerAngles.z - 270f) < 0.2)){
+					(current.contacts[0].normal.x > 0 && Mathf.Abs(this.rigidbody.rotation.eulerAngles.z - 270f) < 0.2))
+                {
 					//UnityEngine.Debug.Log("Colliding on the bottom with " + current.gameObject.name);
 					// if we are not grounded while colliding with something below then we are sliding
 //					UnityEngine.Debug.Log(current.gameObject.name + " : normaly: " + current.contacts[0].normal.y);
-					if(Mathf.Abs(this.rigidbody.rotation.eulerAngles.z - 90f) < 0.2 || Mathf.Abs(this.rigidbody.rotation.eulerAngles.z - 270f) < 0.2){
-						if(Mathf.Abs(current.contacts[0].normal.x)>Mathf.Abs(bestGroundNormal.x) && Mathf.Abs(current.contacts[0].normal.x) > 0.2) {
+					if(Mathf.Abs(this.rigidbody.rotation.eulerAngles.z - 90f) < 0.2 || Mathf.Abs(this.rigidbody.rotation.eulerAngles.z - 270f) < 0.2)
+                    {
+						if(Mathf.Abs(current.contacts[0].normal.x)>Mathf.Abs(bestGroundNormal.x) && Mathf.Abs(current.contacts[0].normal.x) > 0.2) 
+                        {
 							bestGroundNormal = current.contacts[0].normal;
 							collidingOnBottom = true;
 						}
 					}
-					else if(Mathf.Abs(this.rigidbody.rotation.eulerAngles.z) < 0.2 || Mathf.Abs(this.rigidbody.rotation.eulerAngles.z - 180f) < 0.2){
-						if(Mathf.Abs(current.contacts[0].normal.y)>Mathf.Abs(bestGroundNormal.y) && Mathf.Abs(current.contacts[0].normal.y) > 0.2) {
+					else if(Mathf.Abs(this.rigidbody.rotation.eulerAngles.z) < 0.2 || Mathf.Abs(this.rigidbody.rotation.eulerAngles.z - 180f) < 0.2)
+                    {
+						if(Mathf.Abs(current.contacts[0].normal.y) > Mathf.Abs(bestGroundNormal.y) && Mathf.Abs(current.contacts[0].normal.y) > 0.2) 
+                        {
 							bestGroundNormal = current.contacts[0].normal;
 							collidingOnBottom = true;
 						}
@@ -1089,78 +1149,84 @@ public class TWCharacterController : MonoBehaviour{
 			
 		}
 		// if current collisions is empty reset sliding variables.
-		else {
+		else 
+        {
 			//Debug.Log("currentCollisions empty");
 			//isSliding = false;
 			groundNormal = Vector3.zero;
 		}
 		
-		if(!bottomHitting && collidingOnBottom){
+		if(!bottomHitting && collidingOnBottom)
+        {
 			//UnityEngine.Debug.Log("We are setting sliding here!");
 			currentState = playerStates.isSliding;
 		}
-		else if(bottomHitting && collidingOnBottom && !getRising()){
+		else if(bottomHitting && collidingOnBottom && !getRising())
+        {
 			currentState = playerStates.isGrounded;
 			jumpReset = true;
-            //if (!inputManagerRef.PlayerJumping())
-            //{
-            //    inputManagerRef.fingerSwipeAngle = 0;
-            //}
 		}
-		else if(!bottomHitting && !collidingOnBottom && !getRising()){
-			
+		else if(!bottomHitting && !collidingOnBottom && !getRising())
+        {
 			currentState = playerStates.falling;
 			jumpReset = true;
 		}
-		
-		
 		// end, code added to detect sliding better (Shawn)
         if (foldLevel && tearLevel)
         {
             if (!fold.currentlyFolding && !tearManager.PlayerMovingPlatformState)
+            {
                 checkOrientation();
+            }
         }
         else if (foldLevel)
         {
             if (!fold.currentlyFolding)
+            {
                 checkOrientation();
+            }
         }
         else if (tearLevel)
         {
             if (!tearManager.PlayerMovingPlatformState)
+            {
                 checkOrientation();
+            }
         }
         else
+        {
             checkOrientation();
+        }
 	//	if(!fold.currentlyFolding && !tearManager.PlayerMovingPlatformState) checkOrientation();
         // call movement functions.
        // if (!inputManagerRef.GetPieceMoving())
 	
 		if (!fold.currentlyFolding && !tearManager.PlayerMovingPlatformState)
-        Movement();
+        {
+            Movement();
+        }
 		
 		if (fold.currentlyFolding || tearManager.PlayerMovingPlatformState)
 		{
 			this.rigidbody.velocity = new Vector3(0, 0, 0);
 		}
-		
-        //else
-        //    UnityEngine.Debug.Log("MOVING PIECE");
-		
 		// hardcap code that makes it so the player cannot go faster than specified velocity hardCap
-		if(this.rigidbody.velocity.x > hardCap){
+		if (this.rigidbody.velocity.x > hardCap)
+        {
 			this.rigidbody.velocity = new Vector3(hardCap, this.rigidbody.velocity.y, 0);
 		}
-		if(this.rigidbody.velocity.x < -hardCap){
+		if (this.rigidbody.velocity.x < -hardCap)
+        {
 			this.rigidbody.velocity = new Vector3(-hardCap, this.rigidbody.velocity.y, 0);
 		}
-		if(this.rigidbody.velocity.y > hardCap){
+		if (this.rigidbody.velocity.y > hardCap)
+        {
 			this.rigidbody.velocity = new Vector3(this.rigidbody.velocity.x, hardCap, 0);
 		}
-		if(this.rigidbody.velocity.y < -hardCap){
+		if (this.rigidbody.velocity.y < -hardCap)
+        {
 			this.rigidbody.velocity = new Vector3(this.rigidbody.velocity.x, -hardCap, 0);
 		}
-
     }
 	
 	/// <summary>
@@ -1241,150 +1307,124 @@ public class TWCharacterController : MonoBehaviour{
          */
 		if(!tearManager.HaveTornOnce)
 		{
-			if(gameStateManagerRef.GetWorldCollision().PointInsideObject(background,
-				Camera.mainCamera.WorldToScreenPoint(gameObject.transform.position)))
-				return false;
-				
-			else
-			{
-				if(background.GetComponent<MeshRenderer>().isVisible)
-					return true;
-			}
+            if (gameStateManagerRef.GetWorldCollision().PointInsideObject(background,
+                Camera.main.WorldToScreenPoint(gameObject.transform.position)))
+            {
+                return false;
+            }
+            else
+            {
+                if (background.GetComponent<MeshRenderer>().isVisible)
+                {
+                    return true;
+                }
+            }
 		}
-//        GameObject[] paperObjects = new GameObject[2];
-//        paperObjects = GameObject.FindGameObjectsWithTag("background");
-//
-//        if (paperObjects.Length < 2)
-//        {
-//            for (int i = 0; i < paperObjects.Length; ++i)
-//            {
-//                /*
-//                 NEED TO FIX: throws null reference error when not in try/catch statement.
-//                 * - Justin & John
-//                 * 
-//                 * Error: position is set to null somehow, has to do with Camera not existing
-//                 */
-//                try
-//                {
-//                    if (gameStateManagerRef.GetWorldCollision().PointInsideObject(paperObjects[i], Camera.mainCamera.WorldToScreenPoint(gameObject.transform.position)))
-//                        return false;
-//                }
-//                catch
-//                {
-//                    return true;
-//                }
-//            }
-//
-//            return true;
-//        }
-		else {
-        //Cast ray to see if player is hitting desk
-        Vector3 fwd = transform.TransformDirection(Vector3.forward);// * 3.0f);
-		Vector3 max = gameObject.collider.bounds.max;
-		Vector3 min = gameObject.collider.bounds.min;
-		//UnityEngine.Debug.Log(fold.coverupReference.transform.position.z);
-		//UnityEngine.Debug.Log(max + " " + min);
-        RaycastHit hit;
+		else 
+        {
+            //Cast ray to see if player is hitting desk
+            Vector3 fwd = transform.TransformDirection(Vector3.forward);// * 3.0f);
+	        Vector3 max = gameObject.collider.bounds.max;
+	        Vector3 min = gameObject.collider.bounds.min;
+            RaycastHit hit;
 
-			if(!tearManager.PlayerCollidingMaterialChange())
-			{
+	        if(!tearManager.PlayerCollidingMaterialChange())
+	        {
 		        if (Physics.Raycast(new Vector3(max.x+0.01f, gameObject.transform.position.y, (max.z+min.z)/2.0f), fwd, out hit, 2.0f))
 		        {
 		            if (hit.transform.gameObject.tag == "DeadSpace")//|| hit.transform.gameObject.name == "rayTraceBlocker")
 		            {
-			//		UnityEngine.Debug.Log(hit.transform.gameObject.name);
-					//				UnityEngine.Debug.Log("HI");
-		
 		                return true;
 		            }
 		            //Debug.Log(hit.transform.gameObject.name);
 		        }
 		        if (Physics.Raycast(new Vector3(gameObject.transform.position.x, max.y+0.01f, (max.z+min.z)/2), 
-					fwd, out hit, 2.0f))
+			        fwd, out hit, 2.0f))
 		        {
-
 		            if (hit.transform.gameObject.tag == "DeadSpace")
 		            {
-				//	UnityEngine.Debug.Log(hit.transform.gameObject.name);
-					//				UnityEngine.Debug.Log("HI");
-		
 		                return true;
 		            }
 		        }
 		        if (Physics.Raycast(new Vector3(min.x-0.01f, gameObject.transform.position.y, (max.z+min.z)/2), 
-					fwd, out hit, 2.0f))
+			        fwd, out hit, 2.0f))
 		        {
 		            if (hit.transform.gameObject.tag == "DeadSpace")
-					{
-				//	UnityEngine.Debug.Log(hit.transform.gameObject.name);
-					//				UnityEngine.Debug.Log("HI");
+			        {
+		        //	UnityEngine.Debug.Log(hit.transform.gameObject.name);
+			        //				UnityEngine.Debug.Log("HI");
 		
 		                return true;
 		            }
 		        }
 		        if (Physics.Raycast(new Vector3(gameObject.transform.position.x, min.y-0.01f, (max.z+min.z)/2), 
-					fwd, out hit, 2.0f))
+			        fwd, out hit, 2.0f))
 		        {
-
 		            if (hit.transform.gameObject.tag == "DeadSpace")
 		            {
-				//	UnityEngine.Debug.Log(hit.transform.gameObject.name);
-					//				UnityEngine.Debug.Log("HI");
-		
+		        //	UnityEngine.Debug.Log(hit.transform.gameObject.name);
+			        //				UnityEngine.Debug.Log("HI");
 		                return true;
 		            }
 		        }
-				
-				if(fold.isFolded)
-				{
-					if(/*!tearManager.PlayerCollidingWithTornPieceCheck() &&*/ (PointInTriangle(
-					gameObject.transform.position, fold.changeMeshScript.coverMaxX,
-					fold.changeMeshScript.coverMaxY, fold.changeMeshScript.coverMinX) ||
-					PointInTriangle(new Vector3(gameObject.transform.position.x, gameObject.transform.position.y,
-					gameObject.transform.position.z), fold.changeMeshScript.coverMaxX,
-					fold.changeMeshScript.coverMinY, fold.changeMeshScript.coverMinX)))
-						return true;
-				}
-			}
-		}
-		
+
+                if (fold.isFolded)
+                {
+                    if (/*!tearManager.PlayerCollidingWithTornPieceCheck() &&*/ (PointInTriangle(
+                    gameObject.transform.position, fold.changeMeshScript.coverMaxX,
+                    fold.changeMeshScript.coverMaxY, fold.changeMeshScript.coverMinX) ||
+                    PointInTriangle(new Vector3(gameObject.transform.position.x, gameObject.transform.position.y,
+                    gameObject.transform.position.z), fold.changeMeshScript.coverMaxX,
+                    fold.changeMeshScript.coverMinY, fold.changeMeshScript.coverMinX)))
+                    {
+                        return true;
+                    }
+                }
+	        }
+        }
         return false;
 	}
 	
 	// clears list after delay
-	IEnumerator delayClearList(){
+	IEnumerator delayClearList()
+    {
 		yield return new WaitForSeconds(1);
 		currentCollisions.Clear();
 		//Debug.Log("Clear has been called");
 	}
 	
 	// handles checking if the currentCollisions list needs to be cleared when a tear happens
-	void handleTear(){
+	void handleTear()
+    {
 		// logic for finding out if a tear has started and when that torn piece gets placed we need to clear the currentCollision list
-		if(tearManager.TornPieceCurrentlyMaskingCollision && !tearOccurred){
+		if (tearManager.TornPieceCurrentlyMaskingCollision && !tearOccurred)
+        {
 			//UnityEngine.Debug.Log("Need to clear list from tear");
 			//StartCoroutine(delayClearList());
 			currentCollisions.Clear();
 			tearOccurred = true;
 		}
 		// if PlayerMovingPlatformState is true then we need to set tearOccurred = false signalling that a new tear is happening. 
-		else if(tearManager.PlayerMovingPlatformState){
+		else if (tearManager.PlayerMovingPlatformState)
+        {
 			tearOccurred = false;
 		}
 	}
 	
 	// handles checking if the currentCollisions list needs to be cleared when a fold happens
-	void handleFold(){
+	void handleFold()
+    {
 		//UnityEngine.Debug.Log("fold.currentlyFolding: " + fold.currentlyFolding + " this.state: " + currentState);
 		// checks if a fold has not occured and if isFolded is true then we need to clear the list because a fold just occurred
-		if(!fold.currentlyFolding && !foldOccurred){
+		if (!fold.currentlyFolding && !foldOccurred)
+        {
 			//UnityEngine.Debug.Log("clearing list in fold");
-			
 			currentCollisions.Clear();
 			foldOccurred = true;
 		}
 		// if currentlyFolding is true then a new fold has just been initiated and we need to set foldOccurred back to reset
-		else if(fold.currentlyFolding && foldOccurred){
+		else if (fold.currentlyFolding && foldOccurred)
+        {
 			foldOccurred = false;
 		}
 	}
@@ -1395,10 +1435,14 @@ public class TWCharacterController : MonoBehaviour{
 	public List<Collision> currentCollisions = new List<Collision>();
 	
 	// returns true or false if a Collision with the same name as hit exists
-	bool ListContainsElementOfName(List<Collision> currList, Collision hit){
-		foreach (Collision current in currList){
-			if((current != null) && (current.gameObject != null) && (hit.gameObject != null)){
-				if(current.gameObject.name.Equals(hit.gameObject.name)){
+	bool ListContainsElementOfName(List<Collision> currList, Collision hit)
+    {
+		foreach (Collision current in currList)
+        {
+			if((current != null) && (current.gameObject != null) && (hit.gameObject != null))
+            {
+				if(current.gameObject.name.Equals(hit.gameObject.name))
+                {
 					return true;
 				}
 			}
@@ -1407,10 +1451,14 @@ public class TWCharacterController : MonoBehaviour{
 	}
 				
 	// returns true or false if a Collision with the same name as string name exists
-	bool ListContainsElementOfName(List<Collision> currList, string name){
-		foreach (Collision current in currList){
-			if((current != null) && (current.gameObject != null) && (name != null)){
-				if(current.gameObject.name.Equals(name)){
+	bool ListContainsElementOfName(List<Collision> currList, string name)
+    {
+		foreach (Collision current in currList)
+        {
+			if((current != null) && (current.gameObject != null) && (name != null))
+            {
+				if(current.gameObject.name.Equals(name))
+                {
 					return true;
 				}
 			}
@@ -1419,10 +1467,14 @@ public class TWCharacterController : MonoBehaviour{
 	}
 	
 		// returns true or false if a Collision with the same name as string name exists
-	bool ListContainsElementOfGameObject(List<Collision> currList, GameObject obj){
-		foreach (Collision current in currList){
-			if((current != null) && (current.gameObject != null) && (obj != null)){
-				if(current.gameObject.Equals(obj)){
+	bool ListContainsElementOfGameObject(List<Collision> currList, GameObject obj)
+    {
+		foreach (Collision current in currList)
+        {
+			if((current != null) && (current.gameObject != null) && (obj != null))
+            {
+				if(current.gameObject.Equals(obj))
+                {
 					return true;
 				}
 			}
@@ -1431,9 +1483,12 @@ public class TWCharacterController : MonoBehaviour{
 	}
 	
 	// search for an Collision element in a list by matching their names, returns the element
-	Collision GetElementByName(List<Collision> currList, string name){
-		foreach(Collision current in currList){
-			if(current.gameObject.name.Equals(name)){
+	Collision GetElementByName(List<Collision> currList, string name)
+    {
+		foreach(Collision current in currList)
+        {
+			if(current.gameObject.name.Equals(name))
+            {
 				//Debug.Log("Removing " + current.gameObject.name);
 				return current;
 			}
@@ -1441,9 +1496,12 @@ public class TWCharacterController : MonoBehaviour{
 		return null;
 	}
 	
-	Collision GetElementByGameObject(List<Collision> currList, GameObject obj){
-		foreach(Collision current in currList){
-			if(current.gameObject.Equals(obj)){
+	Collision GetElementByGameObject(List<Collision> currList, GameObject obj)
+    {
+		foreach(Collision current in currList)
+        {
+			if(current.gameObject.Equals(obj))
+            {
 					return current;
 			}
 		}
@@ -1452,10 +1510,13 @@ public class TWCharacterController : MonoBehaviour{
 		
 	
 	// upon entering collision with an object add it to teh currentCollisions list if it is not already there. 
-	void OnCollisionEnter(Collision hit){
+	void OnCollisionEnter(Collision hit)
+    {
 		//Debug.Log("Colliding with : " + hit.gameObject.name);
-		if(hit != null && hit.gameObject.CompareTag("Platform") || hit.gameObject.CompareTag("FoldPlatform")){
-			if(!ListContainsElementOfGameObject (currentCollisions, hit.gameObject)){
+		if(hit != null && hit.gameObject.CompareTag("Platform") || hit.gameObject.CompareTag("FoldPlatform"))
+        {
+			if(!ListContainsElementOfGameObject (currentCollisions, hit.gameObject))
+            {
 				//Debug.Log("not in currentCollisions");
 				//Debug.Log("Adding(enter): " + hit.gameObject.name);
 				currentCollisions.Add(hit);
@@ -1464,13 +1525,17 @@ public class TWCharacterController : MonoBehaviour{
 	}
 	
 	// keep checking if a platform we are on is in the list just incase it got removed
-	void OnCollisionStay(Collision hit){
-		if(hit != null && hit.gameObject.CompareTag("Platform") || hit.gameObject.CompareTag("FoldPlatform")){
-			if(!ListContainsElementOfGameObject(currentCollisions, hit.gameObject)){
+	void OnCollisionStay(Collision hit)
+    {
+		if(hit != null && hit.gameObject.CompareTag("Platform") || hit.gameObject.CompareTag("FoldPlatform"))
+        {
+			if(!ListContainsElementOfGameObject(currentCollisions, hit.gameObject))
+            {
 				//Debug.Log("Adding(stay): " + hit.gameObject.name);
 				currentCollisions.Add(hit);
 			}
-			else {
+			else 
+            {
 				currentCollisions.Remove(GetElementByGameObject(currentCollisions, hit.gameObject));
 				currentCollisions.Add(hit);
 			}
@@ -1478,15 +1543,19 @@ public class TWCharacterController : MonoBehaviour{
 	}
 	
 	// upon exiting a platform remove the Collision from currentCollisions
-	void OnCollisionExit(Collision hit){
-		if(hit.gameObject.CompareTag("Platform") || hit.gameObject.CompareTag("FoldPlatform")){
-			if(ListContainsElementOfGameObject(currentCollisions, hit.gameObject)){
+	void OnCollisionExit(Collision hit)
+    {
+		if(hit.gameObject.CompareTag("Platform") || hit.gameObject.CompareTag("FoldPlatform"))
+        {
+			if(ListContainsElementOfGameObject(currentCollisions, hit.gameObject))
+            {
 				//Debug.Log("Removing(exit): " + hit.gameObject.name);
 				currentCollisions.Remove(GetElementByGameObject(currentCollisions, hit.gameObject));
 			}
 		}
 	}
-	    private bool PointInTriangle(Vector3 p, Vector3 a,Vector3 b,Vector3 c)
+
+    private bool PointInTriangle(Vector3 p, Vector3 a,Vector3 b,Vector3 c)
 	{
 //	    if(SameSide(p,a, b,c) && SameSide(p,b, a,c)
 //	        && SameSide(p,c, a,b)) return true;
@@ -1507,10 +1576,15 @@ public class TWCharacterController : MonoBehaviour{
 		float invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
 		float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
 		float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
-		
-		if((u >= 0) && (v >= 0) && (u + v < 1))
-			return true;
-		else return false;
+
+        if ((u >= 0) && (v >= 0) && (u + v < 1))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
 	}
 	/// <summary>
 	/// Stops the players x velocity
