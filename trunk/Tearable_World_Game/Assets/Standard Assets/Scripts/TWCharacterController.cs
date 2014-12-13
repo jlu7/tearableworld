@@ -78,7 +78,7 @@ public class TWCharacterController : MonoBehaviour{
 	public bool foldLevel = false;
 
     // horizontal movement variables.
-    private float baseSpeed = 10F, speed, baseMaxSpeed = 2, maxSpeed = 3F, hardCap = 8, airControl = 1.0F;
+    private float baseSpeed = 14f, speed, baseMaxSpeed = 2, maxSpeed = 3F, hardCap = 8, airControl = 2.0F;
     //private Vector3		horizontalDirection = Vector3.zero;
 	
 	// CHECK VERTICAL SPEED VARIABLES
@@ -87,12 +87,14 @@ public class TWCharacterController : MonoBehaviour{
 	private float uberPosOld = -1000f;
 	private float uberVelOld = -1000f;
 	public bool playerIsDead = false;
+
 	// Velocity corrections
 	float oldUpVelocity = 0;
 	Vector3 oldUpDirection = Vector3.zero;
 	bool killPlayer = false;
+
     // jumping variables. 
-    private float jumpSpeed = 6f;
+    private float jumpSpeed = 8f;
     private Vector3 verticalDirection = Vector3.zero;
     public bool collidingOnBottom = false, jumpReset = true,
 						qDown = false, eDown = false;
@@ -713,7 +715,6 @@ public class TWCharacterController : MonoBehaviour{
 #if UNITY_STANDALONE
 				    myCamera.camera.orthographicSize =myCamera.camera.orthographicSize - 0.5f;
 #endif
-					//desiredAngle = 360.0F;
 					currentDeviceOrientation = DeviceOrientation.LandscapeLeft;
 	                inputManagerRef.initPlayerNonGroundedZRot = 0;
 	                gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.LandscapeLeft);
@@ -770,8 +771,6 @@ public class TWCharacterController : MonoBehaviour{
 #if UNITY_STANDALONE
 				    myCamera.camera.orthographicSize =myCamera.camera.orthographicSize - 0.5f;
 #endif
-					//desiredAngle = 180.0F;
-					//UnityEngine.Debug.Log("calling F when rot is equal to 270");
 					currentDeviceOrientation = DeviceOrientation.LandscapeRight;
 	                inputManagerRef.initPlayerNonGroundedZRot = 180;
 	                gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.LandscapeRight);
@@ -844,8 +843,6 @@ public class TWCharacterController : MonoBehaviour{
 	            inputManagerRef.hasHorizontalCollision = false;
 	            gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.LandscapeLeft);
 	            verticalSwipeDegreeAngle = 90;
-				//desiredAngle = 0.0f;
-				//commented out by Doug
 				if (this.transform.rotation == z90Angle)
                 {
 					desiredAngle = 0.0F;
@@ -986,8 +983,6 @@ public class TWCharacterController : MonoBehaviour{
 		qDown = false;
         animationManagerRef.SetDirection(AnimationManager.AnimationDirection.RIGHT);
 		//HUGE ISSUES WITH RESTARTING GAME, NOTHING IS RESET IS WORKING CORRECTLY - J.C.
-		//Application.LoadLevel(Application.loadedLevel);
-		//return;
 		if(globalVariables.keys > 0)
         {
 			globalVariables.keys = 0;
@@ -1233,62 +1228,6 @@ public class TWCharacterController : MonoBehaviour{
 	/// The only check platform masking once.
 	/// </summary>
 	private bool onlyCheckPlatformMaskingOnce = false;
-	
-//	/// <summary>
-//	/// Players the death effects.
-//	/// </summary>
-//	private void PlayerDeathEffects()
-//	{
-//		if(deathAnimationTimer < 0)
-//		{
-//         //   inputManagerRef.isDead = true;
-//			fold.ResetFold();
-//			UnityEngine.Debug.Log("CHECK");
-//			DeathEffects.GetComponent<ParticleSystem>().enableEmission = false;
-//			DeathEffects.GetComponent<ParticleSystem>().Clear();
-//			DeathEffectsSubEmitter.GetComponent<ParticleSystem>().enableEmission = false;
-//			DeathEffectsSubEmitter.GetComponent<ParticleSystem>().Clear();
-//					PlayerGraphics.GetComponent<MeshRenderer>().enabled = true;
-//			this.transform.position = playerRespawnPoint;
-//			deathAnimationTimer = 1.1f;
-//			playerIsDead = false;
-//			this.transform.rotation = Quaternion.Euler (0f, 0f, 0f);
-//			
-//         //   Application.LoadLevel(Application.loadedLevel);
-//		}
-//		else
-//		{
-//			//Keep track of time since death
-//			deathAnimationTimer -= Time.deltaTime;
-//			
-//			//Creath death movement - For now, a slowed speed of their current direction
-//			Vector3 newDirecton = rigidbody.velocity.normalized;
-//			rigidbody.velocity = new Vector3((float)(deathSpeed * newDirecton.x), 
-//											 (float)(deathSpeed * newDirecton.y), 
-//											 0);
-//			
-//			if(deathAnimationTimer <= (deathAnimationStartTime - totalCharacterDeathAnimationTime))
-//			{
-//				
-//				
-//				//make suer audio has been triggered
-//				if(Camera.main.GetComponent<AudioSource>().clip != DeathAudio)
-//				{
-//					Camera.main.GetComponent<AudioSource>().clip = DeathAudio;
-//					Camera.main.GetComponent<AudioSource>().priority = 0;
-//					Camera.main.GetComponent<AudioSource>().pitch = 1.1f;
-//					Camera.main.GetComponent<AudioSource>().volume = 100.0f;
-//				}
-//				//Play audio from Camera (TODO - Integrate Doug's audio work -> J.C.)
-//				if(!Camera.main.GetComponent<AudioSource>().isPlaying && !havePlayedDeathAudio)
-//				{
-//					Camera.main.GetComponent<AudioSource>().Play();
-//					havePlayedDeathAudio = true;
-//				}
-//				
-//			}
-//		}
-//	}
 	
 	/// <summary>
 	/// Checks for player death when colliding with desk to trigger death effects
