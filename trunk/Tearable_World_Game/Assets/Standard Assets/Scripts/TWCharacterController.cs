@@ -8,15 +8,6 @@ public class TWCharacterController : MonoBehaviour{
 	private GVariables globalVariables;
 
 	private Vector3 playerRespawnPoint;
-	/// <summary>
-	/// The death effects particle emitter object.
-	/// </summary>
-	//public GameObject DeathEffects;
-	
-	/// <summary>
-	/// The death effects sub emitter object.
-	/// </summary>
-//	public GameObject DeathEffectsSubEmitter;
 	
 	/// <summary>
 	/// The player graphics.
@@ -79,7 +70,6 @@ public class TWCharacterController : MonoBehaviour{
 
     // horizontal movement variables.
     private float baseSpeed = 14f, speed, baseMaxSpeed = 2, maxSpeed = 3F, hardCap = 8, airControl = 2.0F;
-    //private Vector3		horizontalDirection = Vector3.zero;
 	
 	// CHECK VERTICAL SPEED VARIABLES
 	private int uberVelTimeCurr = 0;
@@ -251,11 +241,8 @@ public class TWCharacterController : MonoBehaviour{
 			|| ((rotZ == z180Angle.z)&&(this.rigidbody.velocity.x >= 0 && !collidingOnBottom&& !bottomHitting))
 			|| ((rotZ == z270Angle.z && !collidingOnBottom && !bottomHitting) && (this.rigidbody.velocity.x <= 0)))
         {
-				//Debug.Log("from max height check");
-				currentState = playerStates.falling;
-				//jumpReset = true;
-				//UnityEngine.Debug.Log("just got set to falling");
-				beenRising = 0;
+			currentState = playerStates.falling;
+			beenRising = 0;
 		}
     }
 	
@@ -674,9 +661,7 @@ public class TWCharacterController : MonoBehaviour{
 	            {
 #if UNITY_STANDALONE
 					myCamera.camera.orthographicSize = myCamera.camera.orthographicSize + 0.5f;
-//					GameObject.FindGameObjectWithTag("MainCamera").transform.rotation = Quaternion.Euler(0f, 0f, 90f);
 #endif
-					//desiredAngle = 90.0F;
 					currentDeviceOrientation = DeviceOrientation.Portrait;
 	                inputManagerRef.initPlayerNonGroundedZRot = 90;
 	                gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.Portrait);
@@ -688,9 +673,6 @@ public class TWCharacterController : MonoBehaviour{
 #if UNITY_STANDALONE
 				    myCamera.camera.orthographicSize =myCamera.camera.orthographicSize - 0.5f;
 #endif
-					//GameObject.FindGameObjectWithTag("MainCamera").transform.rotation = Quaternion.Euler(0f, 0f, 180f);
-					//this.GetComponent<Camera>().transform.rotation = Quaternion.Euler(0f, 0f, 180f);
-					//desiredAngle = 180.0F;
 					currentDeviceOrientation = DeviceOrientation.LandscapeRight;
 	                gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.LandscapeRight);
 	                inputManagerRef.initPlayerNonGroundedZRot = 180;
@@ -741,7 +723,6 @@ public class TWCharacterController : MonoBehaviour{
 	                gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.PortraitUpsideDown);
 	                verticalSwipeDegreeAngle = 0;
 				}
-	
 				else if(this.transform.rotation == z90Angle)
 	            {
 #if UNITY_STANDALONE
@@ -749,11 +730,10 @@ public class TWCharacterController : MonoBehaviour{
 #endif
 					//desiredAngle = 0.0F;
 					currentDeviceOrientation = DeviceOrientation.LandscapeLeft;
-	                inputManagerRef.initPlayerNonGroundedZRot = 0;
+	                inputManagerRef.initPlayerNonGroundedZRot = 180;
 	                gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.LandscapeLeft);
 	                verticalSwipeDegreeAngle = 90;
 				}
-	
 				else if(this.transform.rotation == z180Angle)
 	            {
 #if UNITY_STANDALONE
@@ -765,14 +745,13 @@ public class TWCharacterController : MonoBehaviour{
 	                gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.Portrait);
 	                verticalSwipeDegreeAngle = 180;
 				}
-	
 				else 
 	            {
 #if UNITY_STANDALONE
 				    myCamera.camera.orthographicSize =myCamera.camera.orthographicSize - 0.5f;
 #endif
 					currentDeviceOrientation = DeviceOrientation.LandscapeRight;
-	                inputManagerRef.initPlayerNonGroundedZRot = 180;
+	                inputManagerRef.initPlayerNonGroundedZRot = 0;
 	                gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.LandscapeRight);
 	                verticalSwipeDegreeAngle = 270;
 				}
@@ -821,7 +800,7 @@ public class TWCharacterController : MonoBehaviour{
 	            gameStateManagerRef.GetScreenManager().SetDeviceOrientation(DeviceOrientation.PortraitUpsideDown);
 	            verticalSwipeDegreeAngle = 0;
 	            inputManagerRef.hasHorizontalCollision = false;
-				desiredAngle = 270f;
+                desiredAngle = 270f;
 				//UnityEngine.Debug.Log("this is getting called");
 				/*if((Mathf.Abs(this.transform.rotation.z - z0Angle.z) < 0.2f)){
 					this.rigidbody.rotation = Quaternion.Euler(0f, 0f, 359.9f);
@@ -1532,17 +1511,4 @@ public class TWCharacterController : MonoBehaviour{
 	{
 		rigidbody.velocity = new Vector3(0f, rigidbody.velocity.y, rigidbody.velocity.z);
 	}
-//	void OnTriggerEnter(Collider other)
-//	{
-//		//need to find a better spot for this check
-//		if(foldLevel)
-//		{
-//			if(!fold.currentlyFolding && !fold.needsToUnfold){
-//		        if (other.transform.name == "coverup")
-//		        {
-//		            playerIsDead = true;
-//		        }
-//			}
-//		}
-//	}
 }
