@@ -4,17 +4,16 @@ using System;
 
 public class Add : MonoBehaviour
 {
-	private NumberToCalculate RefToCalc;
+	private LifeTotalManager LifeTotalManagerRef;
 	
 	public void Start()
 	{
 		//probably just replace this
-		RefToCalc = this.transform.parent.parent.GetComponentInParent<NumberToCalculate>();
+		LifeTotalManagerRef = this.GetComponentInParent<LifeTotalManager>();
 	}
 	
 	void OnClick()
 	{
-		RefToCalc.Add();
-		Debug.Log(RefToCalc.NumToCalculate);
+		LifeTotalManagerRef.CreateAddingCalculator();
 	}
 }

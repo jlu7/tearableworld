@@ -1,15 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
-public class Subtract : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
+public class Subtract : MonoBehaviour
+{
+	private LifeTotalManager LifeTotalManagerRef;
 	
+	public void Start()
+	{
+		//probably just replace this
+		LifeTotalManagerRef = this.GetComponentInParent<LifeTotalManager>();
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	
+	void OnClick()
+	{
+		LifeTotalManagerRef.CreateSubtractingCalculator();
 	}
 }

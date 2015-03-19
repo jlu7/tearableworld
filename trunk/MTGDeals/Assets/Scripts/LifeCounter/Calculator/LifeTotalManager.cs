@@ -13,29 +13,27 @@ public class LifeTotalManager : MonoBehaviour
     {
         GridRef = transform.FindChild("DragablePanel/Grid");
         LifeTotalHistory = new LinkedList<LifeTotalObject>();
-		InstantiateNewNumber(13);
-		InstantiateNewNumber(12);
-		InstantiateNewNumber(11);
-		InstantiateNewNumber(10);
-		InstantiateNewNumber(9);
-		InstantiateNewNumber(8);
-		InstantiateNewNumber(7);
-		InstantiateNewNumber(6);
-		InstantiateNewNumber(5);
-		InstantiateNewNumber(4);
-		InstantiateNewNumber(3);
-		InstantiateNewNumber(2);
-		InstantiateNewNumber(1);
-		InstantiateNewNumber(0);
+		InstantiateNewNumber(20);
     }
 
-    void InstantiateNewNumber(int num)
+    public void InstantiateNewNumber(int num)
     {
         GameObject newNum = Instantiate(Resources.Load<GameObject>("LifeCounter/Number")) as GameObject;
-		LifeTotalObject newLTO = new LifeTotalObject(newNum); 
+
+		if (LifeTotalHistory.Count > 0)
+		{
+			LifeTotalObject newLTO = new LifeTotalObject(newNum, num + LifeTotalHistory.First.Value.Num); 
+        	LifeTotalHistory.AddFirst(newLTO);
+		}
+		else
+		{
+			LifeTotalObject newLTO = new LifeTotalObject(newNum, num); 
+        	LifeTotalHistory.AddFirst(newLTO);
+		}
+
 		newNum.name = "000" + 0;
         newNum.transform.parent = GridRef;
-        newNum.transform.Find("Label").GetComponent<UILabel>().text = num.ToString(CultureInfo.InvariantCulture);
+        newNum.transform.Find("Label").GetComponent<UILabel>().text = LifeTotalHistory.First.Value.Num.ToString(CultureInfo.InvariantCulture);
         newNum.transform.localScale = new Vector3(1, 1, 1);
 		foreach(LifeTotalObject x in LifeTotalHistory)
 		{
@@ -61,18 +59,35 @@ public class LifeTotalManager : MonoBehaviour
 				x.Life.name = "000" + x.Position;
 			}
 		}
-        LifeTotalHistory.AddFirst(newLTO);
         GridRef.GetComponent<UIGrid>().repositionNow = true;
     }
+
+	public void CreateAddingCalculator()
+	{
+		GameObject newCalc = Instantiate(Resources.Load<GameObject>("LifeCounter/Calculator")) as GameObject;
+		newCalc.transform.parent = this.transform;
+		newCalc.GetComponent<NumberToCalculate>().Setup(this, true);
+		newCalc.transform.localScale = new Vector3(1, 1, 1);
+	}
+
+	public void CreateSubtractingCalculator()
+	{
+		GameObject newCalc = Instantiate(Resources.Load<GameObject>("LifeCounter/Calculator")) as GameObject;
+		newCalc.transform.parent = this.transform;
+		newCalc.GetComponent<NumberToCalculate>().Setup(this, false);
+		newCalc.transform.localScale = new Vector3(1, 1, 1);
+	}
 }
 
 public class LifeTotalObject
 {
+	public int Num = 0;
 	public int Position = 0;
 	public GameObject Life;
 
-	public LifeTotalObject(GameObject life)
+	public LifeTotalObject(GameObject life, int num)
 	{
 		Life = life;
+		Num = num;
 	}
 }
