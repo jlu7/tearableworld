@@ -17,10 +17,7 @@ public class AppStartup : MonoBehaviour
     {
         //Initiate The Singleton
         Transaction<List<TcgCard>> t = new Transaction<List<TcgCard>>();
-        yield return StartCoroutine(t.HttpGetRequest("http://gbackdesigns.com/dealfinder/dealfinder/mobile/"));
-        List<TcgCard> cards = t.GetResponse();
-        CardDataManager.GetInstance().Initialize(cards);
-        Debug.Log(CardDataManager.GetInstance().Cards[0].ProductName);
+        yield return StartCoroutine(CardDataManager.GetInstance().CardListRequest());
 
         // Create The FrontPage
         GameObject FrontPage = Instantiate(Resources.Load<GameObject>("FrontPage/FrontPage")) as GameObject;

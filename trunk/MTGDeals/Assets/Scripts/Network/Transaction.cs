@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json.Serialization;
@@ -11,9 +11,16 @@ public class Transaction<T> where T : class
         
     }
 
+    string SetParameters()
+    {
+        return null;
+    }
+
     public IEnumerator HttpGetRequest(string requestUrl)
     {
-        WWW www = new WWW(requestUrl);
+        WWW www = new WWW(
+            requestUrl
+            );
         yield return www;
         response = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(www.text);
     }
@@ -30,5 +37,4 @@ public class Transaction<T> where T : class
             return default(T);
         }
     }
-
 }
